@@ -25,8 +25,7 @@ CREATE TABLE employee (
   first_name VARCHAR(30) NOT NULL,
   last_name VARCHAR(30) NOT NULL,
   role_id INT NOT NULL,
-  CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES roles(id),
+  FOREIGN KEY (role_id) REFERENCES roles(id),
     -- Reference another employee that is manager of current employee
-    manager_id INT,
-    CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employee(id) 
+    FOREIGN KEY (manager_id) REFERENCES employee(id) 
 );

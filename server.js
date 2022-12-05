@@ -5,7 +5,6 @@ const inquirer = require('inquirer');
 // Import and require console.table method for convenience
 require('console.table');
 
-
 // Connect to database
 const db = mysql.createConnection(
   {
@@ -20,5 +19,3 @@ const db = mysql.createConnection(
   console.log(`Connected to the company_db database.`)) 
   // .promise()
   ;
-
-  
