@@ -3,9 +3,7 @@ const mysql = require('mysql2');
 // Import and require inquirer
 const inquirer = require('inquirer');
 // Import and require console.table method for convenience
-const cTable = require('console.table');
-
-const PORT = process.env.PORT || 3001;
+require('console.table');
 
 
 // Connect to database
@@ -18,11 +16,9 @@ const db = mysql.createConnection(
     password: 'BeSmart2023!',
     database: 'company_db'
   },
-  console.log(`Connected to the company_db database.`)
-);
+  // use .promise() so that we can use await on connection
+  console.log(`Connected to the company_db database.`)) 
+  // .promise()
+  ;
 
-
-  db.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
   
