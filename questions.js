@@ -34,7 +34,7 @@ addDepartmentQuestions = [
     },
   ]
 
-  const addEmployeeQuestions = (options)=> {
+  const addEmployeeQuestions = (options, options2)=> {
     return  [
         {
             name: "nameFirst",
@@ -56,7 +56,7 @@ addDepartmentQuestions = [
             name: "manager",
             type: "list",
             message: "Who is the manager for the new employee?",
-            choices: ["SELECT CONCAT(employee.first_name, ' ' , employee.last_name) AS name FROM employee"],
+            choices: options2,
           },
        ]
  } 

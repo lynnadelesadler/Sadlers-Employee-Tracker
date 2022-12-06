@@ -143,8 +143,7 @@ const addRole = async () => {
 const addEmployee = async () => {
   var [rows, fields] = await db
   .promise()
-  // .query("SELECT roles.id, roles.title, roles.salary, department.department_name AS department FROM roles LEFT JOIN department ON roles.department_id = department.id");
-  .query("SELECT id AS value, title AS name FROM roles");
+  .query("SELECT roles.id AS value, roles.title as name FROM roles, LEFT JOIN employee ON roles.id = employee.role_id, CONCAT(employee.first_name, ' ' , employee.last_name) AS name FROM employee");
 console.log(rows);
 var answer = await inquirer.prompt(addEmployeeQuestions(rows));
 console.log(answer);
