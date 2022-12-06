@@ -25,5 +25,5 @@ VALUES
 (3, 'Jim', 'Halpert', 3, 2),
 (4, 'Oscar', 'Martinez', 4, 1),
 (5, 'Angela', 'Martin', 5, 4),
-(6, 'Kevin', 'Malone', 6, 4),
-(7, 'Pam', 'Beesly', 7, 1);
+(6, 'Kevin', 'Malone', 5, 4),
+(7, 'Pam', 'Beesly', 6, 1);
