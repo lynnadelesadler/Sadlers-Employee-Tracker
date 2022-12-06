@@ -56,7 +56,7 @@ addDepartmentQuestions = [
             name: "manager",
             type: "list",
             message: "Who is the manager for the new employee?",
-            choices: ["SELECT * FROM employee WHERE id != ?"],
+            choices: ["SELECT CONCAT(employee.first_name, ' ' , employee.last_name) AS name FROM employee"],
           },
        ]
  } 
