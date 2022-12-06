@@ -2,7 +2,7 @@
 const mysql = require("mysql2");
 // Import and require inquirer
 const inquirer = require("inquirer");
-const {addDepartmentQuestions, addRoleQuestions} = require("./questions");
+const {addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions, updateEmployeeQuestions} = require("./questions");
 // Import and require console.table method for convenience
 require("console.table");
 
@@ -126,7 +126,7 @@ const addRole = async () => {
   var [rows, fields] = await db
     .promise()
     .query("SELECT id AS value, department_name AS name FROM department");
-
+    console.log(rows);
   var answer = await inquirer.prompt(addRoleQuestions(rows));
   console.log(answer);
   db.query(
@@ -141,68 +141,39 @@ const addRole = async () => {
 };
 
 const addEmployee = async () => {
-  await inquirer
-    .prompt([
-      {
-        name: "nameFirst",
-        type: "input",
-        message: "What is the employee's first name?",
-      },
-      {
-        name: "nameLast",
-        type: "input",
-        message: "What is the employee's last name?",
-      },
-      {
-        name: "role",
-        type: "input",
-        message: "What is the employee's role?",
-        choices: [`SELECT * FROM role`],
-      },
-      {
-        name: "manager",
-        type: "input",
-        message: "Who is the manager for the new employee?",
-        choices: [`SELECT * FROM role`],
-      },
-    ])
-    .then((answer) => {
-      db.query(
-        "INSERT INTO employee (first_name, last_name, role, manager) VALUES (?, ?, ?, ?)",
+  var [rows, fields] = await db
+  .promise()
+  // .query("SELECT roles.id, roles.title, roles.salary, department.department_name AS department FROM roles LEFT JOIN department ON roles.department_id = department.id");
+  .query("SELECT id AS value, title AS name FROM roles");
+console.log(rows);
+var answer = await inquirer.prompt(addEmployeeQuestions(rows));
+console.log(answer);
+db.query(
+        "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
         [answer.nameFirst, answer.nameLast, answer.role, answer.manager_id],
         function (err, res) {
           if (err) throw err;
           console.log("Employee added to the database!");
-          appMenu();
+          viewEmployees();
         }
       );
-    });
 };
 
-const updateEmployee = () => {
-  inquirer
-    .prompt([
-      {
-        name: "id",
-        type: "input",
-        message: "Enter employee id",
-      },
-      {
-        name: "jobId",
-        type: "input",
-        message: "Enter new job id",
-      },
-    ])
-    .then((answer) => {
-      db.query(
-        "UPDATE employee SET job_id=? WHERE id=?",
+const updateEmployee = async () => {
+  var [rows, fields] = await db
+  .promise()
+  .query("SELECT CONCAT(employee.first_name, ' ' , employee.last_name) AS name FROM employee");
+  console.log(rows);
+var answer = await inquirer.prompt(updateEmployeeQuestions(rows));
+console.log(answer);
+db.query(
+        "UPDATE employee SET role_id=? WHERE id=?",
         [answer.jobId, answer.id],
         function (err, res) {
           if (err) throw err;
           console.log("Employee updated!");
-          appMenu();
+          viewEmployees();
         }
       );
-    });
 };
 appMenu();

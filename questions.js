@@ -34,4 +34,55 @@ addDepartmentQuestions = [
     },
   ]
 
-module.exports= {addRoleQuestions, addDepartmentQuestions}
+  const addEmployeeQuestions = (options)=> {
+    return  [
+        {
+            name: "nameFirst",
+            type: "input",
+            message: "What is the employee's first name?",
+          },
+          {
+            name: "nameLast",
+            type: "input",
+            message: "What is the employee's last name?",
+          },
+          {
+            name: "role",
+            type: "list",
+            message: "What is the employee's role?",
+            choices: options,
+          },
+          {
+            name: "manager",
+            type: "list",
+            message: "Who is the manager for the new employee?",
+            choices: ["SELECT * FROM employee WHERE id != ?"],
+          },
+       ]
+ } 
+
+ const updateEmployeeQuestions = (options)=> {
+    return  [
+            
+          {
+            name: "name",
+            type: "list",
+            message: "What is the employee's name?",
+            choices: options,
+          },
+          {
+            name: "role",
+            type: "list",
+            message: "What is the employee's role?",
+            choices: options,
+          },
+          {
+            name: "manager",
+            type: "list",
+            message: "Who is the manager for the new employee?",
+            choices: options,
+          },
+       ]
+ } 
+
+module.exports= {addRoleQuestions, addDepartmentQuestions, addEmployeeQuestions, updateEmployeeQuestions}
