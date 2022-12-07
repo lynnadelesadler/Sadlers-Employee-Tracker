@@ -155,14 +155,14 @@ const addEmployee = async () => {
   var [rows2, fields] = await db
     .promise()
     .query(
-      "SELECT manager_id AS value, CONCAT(employee.first_name, ' ' , employee.last_name) AS name FROM employee"
+      "SELECT id AS value, CONCAT(employee.first_name, ' ' , employee.last_name) AS name FROM employee"
     );
   console.log(rows2);
   var answer = await inquirer.prompt(addEmployeeQuestions(rows, rows2));
   console.log(answer);
   db.query(
     "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
-    [answer.nameFirst, answer.nameLast, answer.role, answer.manager_id],
+    [answer.nameFirst, answer.nameLast, answer.role, answer.manager],
     function (err, res) {
       if (err) throw err;
       console.log("Employee added to the database!");
