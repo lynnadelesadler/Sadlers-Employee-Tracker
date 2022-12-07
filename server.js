@@ -175,7 +175,7 @@ const updateEmployee = async () => {
   var [rows, fields] = await db
     .promise()
     .query(
-      "SELECT CONCAT(employee.first_name, ' ' , employee.last_name) AS name FROM employee");
+      "SELECT id AS value, CONCAT(employee.first_name, ' ' , employee.last_name) AS name FROM employee");
   // console.log(rows);
   var [rows2, fields] = await db
     .promise()
@@ -185,7 +185,7 @@ const updateEmployee = async () => {
   console.log(answer);
   db.query(
     "UPDATE employee SET role_id=? WHERE id=?",
-    [answer.employeeId, answer.roleId],
+    [answer.role, answer.name],
     function (err, res) {
       if (err) throw err;
       console.log("Employee updated!");
