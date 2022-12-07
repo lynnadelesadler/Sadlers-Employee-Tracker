@@ -2,7 +2,12 @@
 const mysql = require("mysql2");
 // Import and require inquirer
 const inquirer = require("inquirer");
-const {addDepartmentQuestions, addRoleQuestions, addEmployeeQuestions, updateEmployeeQuestions} = require("./questions");
+const {
+  addDepartmentQuestions,
+  addRoleQuestions,
+  addEmployeeQuestions,
+  updateEmployeeQuestions,
+} = require("./questions");
 // Import and require console.table method for convenience
 require("console.table");
 
@@ -89,44 +94,46 @@ const viewDepartment = () => {
 // If user selects view all departments option from the menu, query all rows from roles table
 // err is invoked if response fails to pull rows from roles table
 const viewRoles = () => {
-  db.query("SELECT roles.id, roles.title, roles.salary, department.department_name AS department FROM roles LEFT JOIN department ON roles.department_id = department.id", function (err, res) {
-    if (err) throw err;
-    console.table(res);
-    appMenu();
-  });
+  db.query(
+    "SELECT roles.id, roles.title, roles.salary, department.department_name AS department FROM roles LEFT JOIN department ON roles.department_id = department.id",
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      appMenu();
+    }
+  );
 };
 
 const viewEmployees = () => {
-  db.query("SELECT employee.id, employee.first_name, employee.last_name, roles.title, department.department_name AS department, roles.salary, CONCAT(manager.first_name, ' ' , manager.last_name) AS manager FROM employee LEFT JOIN roles ON employee.role_id = roles.id LEFT JOIN department ON roles.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id", function (err, res) {
-    if (err) throw err;
-    console.table(res);
-    appMenu();
-  });
+  db.query(
+    "SELECT employee.id, employee.first_name, employee.last_name, roles.title, department.department_name AS department, roles.salary, CONCAT(manager.first_name, ' ' , manager.last_name) AS manager FROM employee LEFT JOIN roles ON employee.role_id = roles.id LEFT JOIN department ON roles.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id",
+    function (err, res) {
+      if (err) throw err;
+      console.table(res);
+      appMenu();
+    }
+  );
 };
 
 const addDepartment = () => {
-  inquirer
-    .prompt(addDepartmentQuestions)
-    .then((answer) => {
-      db.query(
-        "INSERT INTO department (department_name) VALUES (?)",
-        [answer.department],
-        function (err, res) {
-          if (err) throw err;
-          console.log("Department added to the database!");
-          appMenu();
-        }
-      );
-    });
+  inquirer.prompt(addDepartmentQuestions).then((answer) => {
+    db.query(
+      "INSERT INTO department (department_name) VALUES (?)",
+      [answer.department],
+      function (err, res) {
+        if (err) throw err;
+        console.log("Department added to the database!");
+        viewDepartment();
+      }
+    );
+  });
 };
-
-
 
 const addRole = async () => {
   var [rows, fields] = await db
     .promise()
     .query("SELECT id AS value, department_name AS name FROM department");
-    console.log(rows);
+  console.log(rows);
   var answer = await inquirer.prompt(addRoleQuestions(rows));
   console.log(answer);
   db.query(
@@ -142,37 +149,48 @@ const addRole = async () => {
 
 const addEmployee = async () => {
   var [rows, fields] = await db
-  .promise()
-  .query("SELECT roles.id AS value, roles.title as name FROM roles, LEFT JOIN employee ON roles.id = employee.role_id, CONCAT(employee.first_name, ' ' , employee.last_name) AS name FROM employee");
-console.log(rows);
-var answer = await inquirer.prompt(addEmployeeQuestions(rows));
-console.log(answer);
-db.query(
-        "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
-        [answer.nameFirst, answer.nameLast, answer.role, answer.manager_id],
-        function (err, res) {
-          if (err) throw err;
-          console.log("Employee added to the database!");
-          viewEmployees();
-        }
-      );
+    .promise()
+    .query("SELECT id AS value, title AS name FROM roles");
+  // console.log(rows);
+  var [rows2, fields] = await db
+    .promise()
+    .query(
+      "SELECT manager_id AS value, CONCAT(employee.first_name, ' ' , employee.last_name) AS name FROM employee"
+    );
+  console.log(rows2);
+  var answer = await inquirer.prompt(addEmployeeQuestions(rows, rows2));
+  console.log(answer);
+  db.query(
+    "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
+    [answer.nameFirst, answer.nameLast, answer.role, answer.manager_id],
+    function (err, res) {
+      if (err) throw err;
+      console.log("Employee added to the database!");
+      viewEmployees();
+    }
+  );
 };
 
 const updateEmployee = async () => {
   var [rows, fields] = await db
-  .promise()
-  .query("SELECT CONCAT(employee.first_name, ' ' , employee.last_name) AS name FROM employee");
-  console.log(rows);
-var answer = await inquirer.prompt(updateEmployeeQuestions(rows));
-console.log(answer);
-db.query(
-        "UPDATE employee SET role_id=? WHERE id=?",
-        [answer.jobId, answer.id],
-        function (err, res) {
-          if (err) throw err;
-          console.log("Employee updated!");
-          viewEmployees();
-        }
-      );
+    .promise()
+    .query(
+      "SELECT CONCAT(employee.first_name, ' ' , employee.last_name) AS name FROM employee");
+  // console.log(rows);
+  var [rows2, fields] = await db
+    .promise()
+    .query("SELECT id AS value, title AS name FROM roles");
+  // console.log(rows2);
+  var answer = await inquirer.prompt(updateEmployeeQuestions(rows, rows2));
+  console.log(answer);
+  db.query(
+    "UPDATE employee SET role_id=? WHERE id=?",
+    [answer.employeeId, answer.roleId],
+    function (err, res) {
+      if (err) throw err;
+      console.log("Employee updated!");
+      viewEmployees();
+    }
+  );
 };
 appMenu();

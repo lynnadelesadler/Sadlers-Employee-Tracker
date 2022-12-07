@@ -11,7 +11,7 @@ LEFT JOIN role
 ON employee.role_id = role.id
 
 -- query emloyee table to join the employee id to the manager id --
-SELECT employee.id AS emloyee, employee.manager_id
+SELECT employee.id AS employee, employee.manager_id
 FROM employee
 LEFT JOIN employee
-ON role.employee.id = manager_id
+ON employee.employee.id = manager_id
